@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,62 +7,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Books {
-  book_UUID    String    @id(map: "books_book_uuid") @unique @default(uuid()) @db.VarChar(36)
-  name         String   @db.VarChar(30)
-  description  String   @db.VarChar(30)
+  book_UUID   String @id(map: "books_book_uuid") @unique @default(uuid()) @db.VarChar(36)
+  name        String @db.VarChar(30)
+  description String @db.VarChar(30)
 
-  author       Authors @relation(map: "author_fk", fields: [author_UUID], references: [author_UUID])
-  author_UUID  String 
-  borrow       Borrows?  @relation(map: "borrow_fk", fields: [borrow_UUID], references: [borrow_UUID])
-  borrow_UUID  String?
+  author      Authors  @relation(map: "author_fk", fields: [author_UUID], references: [author_UUID])
+  author_UUID String
+  borrow      Borrows? @relation(map: "borrow_fk", fields: [borrow_UUID], references: [borrow_UUID])
+  borrow_UUID String?
 }
 
 model Borrows {
-borrow_UUID    String    @id(map: "borrows_pk") @unique() @default(uuid()) @db.Char(36)
-status         Int
-started_at     DateTime  @default(now())
-end_at         DateTime
+  borrow_UUID String   @id(map: "borrows_pk") @unique() @default(uuid()) @db.Char(36)
+  status      Int
+  started_at  DateTime @default(now())
+  end_at      DateTime
 
-borrower_UUID  String     @db.Char(36)
-borrower       Borrowers  @relation(map: "borrowers_pk", fields: [borrow_UUID], references: [UUID], onDelete: Cascade)
-employee_UUID  String     @db.Char(36)
-employee       Employees  @relation(map: "employees_pk", fields: [employee_UUID], references: [UUID], onDelete: Cascade)
+  borrower_UUID String    @db.Char(36)
+  borrower      Borrowers @relation(map: "borrowers_pk", fields: [borrow_UUID], references: [borrower_UUID], onDelete: Cascade)
+  employee_UUID String    @db.Char(36)
+  employee      Employees @relation(map: "employees_pk", fields: [employee_UUID], references: [employee_UUID], onDelete: Cascade)
 
-Books          Books[]
+  Books Books[]
 }
 
 model Authors {
-  author_UUID           String             @id(map: "authors_author_uuid") @unique @default(uuid()) @db.VarChar(36)
-  
-  humanInformation      HumanInformations  @relation(fields: [humanInformation_UUID], references: [humanInformation_UUID])
-  humanInformation_UUID String 
-  books               Books[]
+  author_UUID String @id(map: "authors_author_uuid") @unique @default(uuid()) @db.VarChar(36)
+
+  humanInformation      HumanInformations @relation(fields: [humanInformation_UUID], references: [humanInformation_UUID])
+  humanInformation_UUID String
+  books                 Books[]
 }
 
 model Borrowers {
-borrower_UUID   String    @id(map: "borrowers_pk") @unique() @default(uuid()) @db.Char(36)
-first_name      String    @db.Char(20)
-last_name       String    @db.Char(30)
+  borrower_UUID String @id(map: "borrowers_pk") @unique() @default(uuid()) @db.Char(36)
 
-Borrows         Borrows[]
+  Borrows                                Borrows[]
+  HumanInformations                      HumanInformations? @relation(fields: [humanInformationsHumanInformation_UUID], references: [humanInformation_UUID])
+  humanInformationsHumanInformation_UUID String?            @db.VarChar(36)
 }
 
 model Employees {
-employee_UUID  String    @id(map: "employees_pk") @unique() @default(uuid()) @db.Char(36)
-mail_address   String    @db.Char(80)
-password       String    @db.Char(72)
-first_name     String    @db.Char(20)
-last_name      String    @db.Char(30)
+  employee_UUID String @id(map: "employees_pk") @unique() @default(uuid()) @db.Char(36)
+  mail_address  String @db.Char(80)
+  password      String @db.Char(72)
 
-Borrows        Borrows[]
+  Borrows                                Borrows[]
+  HumanInformations                      HumanInformations? @relation(fields: [humanInformationsHumanInformation_UUID], references: [humanInformation_UUID])
+  humanInformationsHumanInformation_UUID String?            @db.VarChar(36)
 }
 
 model HumanInformations {
   humanInformation_UUID String      @id(map: "humaninformations_humaninformation_uuid") @unique @default(uuid()) @db.VarChar(36)
-  first_name            String    @db.VarChar(30)
-  last_name             String    @db.VarChar(30)
+  first_name            String      @db.VarChar(30)
+  last_name             String      @db.VarChar(30)
   authors               Authors[]
   borrowers             Borrowers[]
   employees             Employees[]

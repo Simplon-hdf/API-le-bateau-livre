@@ -49,8 +49,11 @@ Vous devez créer une API pour les employés d'une médiathèque, ces employés 
 
 ### MCD
 
-![](https://raw.githubusercontent.com/Simplon-hdf/Repo-API-2-Thibaud-Youssouf/develop/Image/MCD-API-2.png)
-
+<p align="center">
+  <img src="./img/mcd.png" width="600" height="350" alt="mcd">
+</p>
 ### MLD
 
-![](https://raw.githubusercontent.com/Simplon-hdf/Repo-API-2-Thibaud-Youssouf/develop/Image/MLD-API-2.png)
+<p align="center">
+  <img src="./img/mld.png" width="600" height="350" alt="mld">
+</p>

@@ -48,7 +48,12 @@ export class EmployeesService {
     return updatedEmployee;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} employee`;
+  public async deleteByUUID(uuid: string) {
+    const deletedEmployee = await this.prisma.employees.delete({
+      where: {
+        UUID: uuid,
+      },
+    });
+    return deletedEmployee;
   }
 }

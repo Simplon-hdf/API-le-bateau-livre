@@ -31,8 +31,8 @@ export class EmployeesController {
     return this.employeesService.updateByUUID(uuid, updateEmployeeDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.employeesService.remove(+id);
+  @Delete(':uuid')
+  public deleteByUUID(@Param('uuid') uuid: string) {
+    return this.employeesService.deleteByUUID(uuid);
   }
 }

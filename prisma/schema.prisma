@@ -1,5 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -11,8 +9,11 @@ datasource db {
 }
 
 model Books {
+  UUID        String   @id @default(uuid()) @db.VarChar(36)
+  name        String   @db.VarChar(40)
+  description String   @db.Text()
 
-
+  borrows Borrows[]
 }
 
 model Borrows {
@@ -30,9 +31,11 @@ Books          Books[]
 }
 
 model Authors {
+  UUID      String  @id @default(uuid()) @db.VarChar(36)
+  firstName String  @db.VarChar(20)
+  lastName  String  @db.VarChar(30)
 
-
-
+  humanInformation HumanInformations
 }
 
 model Borrowers {
@@ -54,7 +57,9 @@ Borrows        Borrows[]
 }
 
 model HumanInformations {
+  UUID        String  @id @default(uuid()) @db.VarChar(36)
+  first_name  String  @db.Char(20)
+  last_name   String  @db.Char(30)
 
-
-
+  author Authors
 }

@@ -33,11 +33,27 @@ export class EmployeesService {
     return gettedEmployee;
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+  public async updateByUUID(uuid: string, updateEmployeeDto: UpdateEmployeeDto) {
+    const updatedEmployee = await this.prisma.employees.update({
+      where: {
+        UUID: uuid,
+      },
+      data: {
+        mail_address: !!updateEmployeeDto.mail_address ? updateEmployeeDto.mail_address : undefined,
+        password: !!updateEmployeeDto.password ? updateEmployeeDto.password : undefined,
+        first_name: !!updateEmployeeDto.first_name ? updateEmployeeDto.first_name : undefined,
+        last_name: !!updateEmployeeDto.last_name ? updateEmployeeDto.last_name : undefined,
+      },
+    });
+    return updatedEmployee;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} employee`;
+  public async deleteByUUID(uuid: string) {
+    const deletedEmployee = await this.prisma.employees.delete({
+      where: {
+        UUID: uuid,
+      },
+    });
+    return deletedEmployee;
   }
 }

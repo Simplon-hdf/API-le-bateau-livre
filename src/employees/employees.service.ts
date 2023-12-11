@@ -6,17 +6,31 @@ import { PrismaService } from 'src/prisma.service';
 @Injectable()
 export class EmployeesService {
   constructor(private readonly prisma: PrismaService) {}
-  
-  create(createEmployeeDto: CreateEmployeeDto) {
-    return 'This action adds a new employee';
+
+  public async create(createEmployeeDto: CreateEmployeeDto) {
+    const createdEmployee = await this.prisma.employees.create({
+      data: {
+        mail_address: createEmployeeDto.mail_address,
+        password: createEmployeeDto.password,
+        first_name: createEmployeeDto.first_name,
+        last_name: createEmployeeDto.last_name,
+
+      },
+    });
+    return createdEmployee;
   }
 
   findAll() {
     return `This action returns all employees`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} employee`;
+  public async getByUUID(uuid: string) {
+    const gettedEmployee = await this.prisma.employees.findUnique({
+      where: {
+        UUID: uuid,
+      },
+    });
+    return gettedEmployee;
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {

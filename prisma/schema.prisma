@@ -42,6 +42,8 @@ model Authors {
 
 model Borrowers {
   borrower_UUID String @id(map: "borrowers_pk") @unique() @default(uuid()) @db.Char(36)
+  first_name    String @db.Char(20)
+  last_name     String @db.Char(30)
 
   Borrows                                Borrows[]
   HumanInformations                      HumanInformations? @relation(fields: [humanInformationsHumanInformation_UUID], references: [humanInformation_UUID])
@@ -52,6 +54,8 @@ model Employees {
   employee_UUID String @id(map: "employees_pk") @unique() @default(uuid()) @db.Char(36)
   mail_address  String @db.Char(80)
   password      String @db.Char(72)
+  first_name    String @db.Char(20)
+  last_name     String @db.Char(30)
 
   Borrows                                Borrows[]
   HumanInformations                      HumanInformations? @relation(fields: [humanInformationsHumanInformation_UUID], references: [humanInformation_UUID])

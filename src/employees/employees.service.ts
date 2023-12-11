@@ -24,8 +24,13 @@ export class EmployeesService {
     return `This action returns all employees`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} employee`;
+  public async getByUUID(uuid: string) {
+    const gettedEmployee = await this.prisma.employees.findUnique({
+      where: {
+        UUID: uuid,
+      },
+    });
+    return gettedEmployee;
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {

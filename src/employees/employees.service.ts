@@ -33,7 +33,7 @@ export class EmployeesService {
       `Employee ${uuid} has been found`,
       await this.prisma.employees.findUnique({
       where: {
-        UUID: uuid,
+        employee_UUID: uuid,
       },
     }),
   );
@@ -45,7 +45,7 @@ export class EmployeesService {
       `Employee ${updateEmployeeDto.first_name} has been updated`,
       await this.prisma.employees.update({
       where: {
-        UUID: uuid,
+        employee_UUID: uuid,
       },
       data: {
         mail_address: !!updateEmployeeDto.mail_address ? updateEmployeeDto.mail_address : undefined,
@@ -63,7 +63,7 @@ export class EmployeesService {
       `Employee ${uuid} has been deleted`,
       await this.prisma.employees.delete({
       where: {
-        UUID: uuid,
+        employee_UUID: uuid,
       },
     }),
   );

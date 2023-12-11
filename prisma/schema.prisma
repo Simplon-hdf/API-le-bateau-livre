@@ -8,14 +8,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Books {
-  UUID        String     @id @default(uuid()) @db.VarChar(36)
-  name        String     @db.VarChar(40)
-  description String     @db.Text()
-  author_UUID String     @db.Char(36)
-  author      Authors    @relation(fields: [author_UUID], references: [UUID])
 
-  borrows     Borrows[]
+model Books {
+  book_UUID    String    @id(map: "books_book_uuid") @unique @default(uuid()) @db.VarChar(36)
+  name         String   @db.VarChar(30)
+  description  String   @db.VarChar(30)
+
+  author       Authors @relation(fields: [author_UUID], references: [author_UUID])
+  author_UUID  String 
+  borrow       Borrows?  @relation(fields: [borrow_UUID], references: [borrow_UUID])
+  borrow_UUID  String?
 }
 
 model Borrows {
@@ -33,12 +35,10 @@ Books          Books[]
 }
 
 model Authors {
-  UUID            String            @id @default(uuid()) @db.VarChar(36)
-  firstName       String            @db.VarChar(20)
-  lastName        String            @db.VarChar(30)
-
-  humanInformation HumanInformations
-  books           Books[]
+  author_UUID           String             @id(map: "authors_author_uuid") @unique @default(uuid()) @db.VarChar(36)
+  humanInformation      HumanInformations  @relation(fields: [humanInformation_UUID], references: [humanInformation_UUID])
+  humanInformation_UUID String 
+  books               Books[]
 }
 
 model Borrowers {
@@ -60,9 +60,10 @@ Borrows        Borrows[]
 }
 
 model HumanInformations {
-  UUID        String        @id @default(uuid()) @db.VarChar(36)
-  first_name  String        @db.Char(20)
-  last_name   String        @db.Char(30)
-
-  author      Authors
+  humanInformation_UUID String      @id(map: "humaninformations_humaninformation_uuid") @unique @default(uuid()) @db.VarChar(36)
+  first_name            String    @db.VarChar(30)
+  last_name             String    @db.VarChar(30)
+  authors               Authors[]
+  borrowers             Borrowers[]
+  employees             Employees[]
 }

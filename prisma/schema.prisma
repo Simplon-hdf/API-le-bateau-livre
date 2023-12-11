@@ -9,11 +9,13 @@ datasource db {
 }
 
 model Books {
-  UUID        String   @id @default(uuid()) @db.VarChar(36)
-  name        String   @db.VarChar(40)
-  description String   @db.Text()
+  UUID        String     @id @default(uuid()) @db.VarChar(36)
+  name        String     @db.VarChar(40)
+  description String     @db.Text()
+  author_UUID String     @db.Char(36)
+  author      Authors    @relation(fields: [author_UUID], references: [UUID])
 
-  borrows Borrows[]
+  borrows     Borrows[]
 }
 
 model Borrows {
@@ -31,11 +33,12 @@ Books          Books[]
 }
 
 model Authors {
-  UUID      String  @id @default(uuid()) @db.VarChar(36)
-  firstName String  @db.VarChar(20)
-  lastName  String  @db.VarChar(30)
+  UUID            String            @id @default(uuid()) @db.VarChar(36)
+  firstName       String            @db.VarChar(20)
+  lastName        String            @db.VarChar(30)
 
   humanInformation HumanInformations
+  books           Books[]
 }
 
 model Borrowers {
@@ -57,9 +60,9 @@ Borrows        Borrows[]
 }
 
 model HumanInformations {
-  UUID        String  @id @default(uuid()) @db.VarChar(36)
-  first_name  String  @db.Char(20)
-  last_name   String  @db.Char(30)
+  UUID        String        @id @default(uuid()) @db.VarChar(36)
+  first_name  String        @db.Char(20)
+  last_name   String        @db.Char(30)
 
-  author Authors
+  author      Authors
 }

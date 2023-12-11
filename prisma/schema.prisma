@@ -16,9 +16,17 @@ model Books {
 }
 
 model Borrows {
+borrow_UUID    String    @id(map: "borrows_pk") @unique() @default(uuid()) @db.Char(36)
+status         Int
+started_at     DateTime  @default(now())
+end_at         DateTime
 
+borrower_UUID  String     @db.Char(36)
+borrower       Borrowers  @relation(map: "borrowers_pk", fields: [borrow_UUID], references: [UUID], onDelete: Cascade)
+employee_UUID  String     @db.Char(36)
+employee       Employees  @relation(map: "employees_pk", fields: [employee_UUID], references: [UUID], onDelete: Cascade)
 
-
+Books          Books[]
 }
 
 model Authors {
@@ -28,19 +36,25 @@ model Authors {
 }
 
 model Borrowers {
+borrower_UUID   String    @id(map: "borrowers_pk") @unique() @default(uuid()) @db.Char(36)
+first_name      String    @db.Char(20)
+last_name       String    @db.Char(30)
 
-
-
+Borrows         Borrows[]
 }
 
 model Employees {
+employee_UUID  String    @id(map: "employees_pk") @unique() @default(uuid()) @db.Char(36)
+mail_address   String    @db.Char(80)
+password       String    @db.Char(72)
+first_name     String    @db.Char(20)
+last_name      String    @db.Char(30)
 
-
-
+Borrows        Borrows[]
 }
 
 model HumanInformations {
 
 
-  
+
 }

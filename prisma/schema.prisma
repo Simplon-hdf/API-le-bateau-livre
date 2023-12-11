@@ -14,9 +14,9 @@ model Books {
   name         String   @db.VarChar(30)
   description  String   @db.VarChar(30)
 
-  author       Authors @relation(fields: [author_UUID], references: [author_UUID])
+  author       Authors @relation(map: "author_fk", fields: [author_UUID], references: [author_UUID])
   author_UUID  String 
-  borrow       Borrows?  @relation(fields: [borrow_UUID], references: [borrow_UUID])
+  borrow       Borrows?  @relation(map: "borrow_fk", fields: [borrow_UUID], references: [borrow_UUID])
   borrow_UUID  String?
 }
 
@@ -36,6 +36,7 @@ Books          Books[]
 
 model Authors {
   author_UUID           String             @id(map: "authors_author_uuid") @unique @default(uuid()) @db.VarChar(36)
+  
   humanInformation      HumanInformations  @relation(fields: [humanInformation_UUID], references: [humanInformation_UUID])
   humanInformation_UUID String 
   books               Books[]

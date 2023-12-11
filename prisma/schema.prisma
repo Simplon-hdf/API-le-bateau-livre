@@ -9,3 +9,38 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Books {
+
+
+}
+
+model Borrows {
+
+
+
+}
+
+model Authors {
+
+
+
+}
+
+model Borrowers {
+
+
+
+}
+
+model Employees {
+
+
+
+}
+
+model HumanInformations {
+
+
+  
+}

@@ -12,37 +12,21 @@ export class EmployeesService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  private async getHumanInformations(HumanInformationUUIDS: string[]) {
-    return await this.prisma.humanInformations.findMany({
-      where: {
-        OR: HumanInformationUUIDS.map((humanInformation) => ({
-          humanInformation_UUID: humanInformation,
-        })),
-      },
-    });
-  }
 
-  public async create(createEmployeeDto: CreateEmployeeDto) {
-
-    const orderedHumanInformations = await this.getHumanInformations(
-      createEmployeeDto.humanInformation_UUID,
-    );
-
-    const first_name = orderedHumanInformations.map((HumanInformation) => HumanInformation.first_name);
-
-    const last_name = orderedHumanInformations.map((HumanInformation) => HumanInformation.last_name);
-
+public async create(createEmployeeDto: CreateEmployeeDto) {
 const createdEmployee = new NormalizedResponse(
-  `Employee ${createEmployeeDto.mail_address} has been created`,
+  `Employee with this email ${createEmployeeDto.mail_address} has been created`,
   await this.prisma.employees.create({
     data: {
       mail_address: createEmployeeDto.mail_address,
       password: await bcrypt.hash(createEmployeeDto.password, this.saltGenRound),
-      humanInformations: {
-        connect: orderedHumanInformations.map(info => ({ humanInformation_UUID: info.humanInformation_UUID })),
-      },
+      humanInformation: {
+        connect: { 
+          humanInformation_UUID: createEmployeeDto.humanInformation_UUID
+        }
+      }
     },
-  ),
+  }),
 );
 return createdEmployee.toJSON();
 }
@@ -51,43 +35,51 @@ return createdEmployee.toJSON();
     return `This action returns all employees`;
   }
 
-  private async getProducts(productUUIDS: string[]) {
-    return await this.prisma.products.findMany({
-      where: {
-        OR: productUUIDS.map((product) => ({
-          UUID: product,
-        })),
-      },
-    });
+  public async getByUUID(uuid: string) {
+    const gettedEmployee = new NormalizedResponse(
+      `Employee ${uuid} has been found`,
+      await this.prisma.employees.findUnique({
+        where: {
+          employee_UUID: uuid,
+        },
+        include: {
+          humanInformation: {
+            select: {
+              first_name: true,
+              last_name: true,
+            }
+          }
+        }
+      }),
+    );
+    return gettedEmployee.toJSON();
   }
 
   public async updateByUUID(uuid: string, updateEmployeeDto: UpdateEmployeeDto) {
     const updatedEmployee = new NormalizedResponse(
-      `Employee ${updateEmployeeDto.first_name} has been updated`,
+      `Employee with this ${updateEmployeeDto.mail_address} has been updated`,
       await this.prisma.employees.update({
-      where: {
-        employee_UUID: uuid,
-      },
-      data: {
-        mail_address: !!updateEmployeeDto.mail_address ? updateEmployeeDto.mail_address : undefined,
-        password: !!updateEmployeeDto.password ? updateEmployeeDto.password : undefined,
-        first_name: !!updateEmployeeDto.first_name ? updateEmployeeDto.first_name : undefined,
-        last_name: !!updateEmployeeDto.last_name ? updateEmployeeDto.last_name : undefined,
-      },
-    }),
-  );
-    return updatedEmployee.toJSON;
+        where: {
+          employee_UUID: uuid,
+        },
+        data: {
+          mail_address: !!updateEmployeeDto.mail_address ? updateEmployeeDto.mail_address : undefined,
+          password: !!await bcrypt.hash(updateEmployeeDto.password, this.saltGenRound) ? await bcrypt.hash(updateEmployeeDto.password, this.saltGenRound) : undefined,
+        },
+      }),
+    );
+    return updatedEmployee.toJSON();
   }
 
   public async deleteByUUID(uuid: string) {
     const deletedEmployee = new NormalizedResponse(
       `Employee ${uuid} has been deleted`,
       await this.prisma.employees.delete({
-      where: {
-        employee_UUID: uuid,
-      },
-    }),
-  );
-    return deletedEmployee.toJSON;
+        where: {
+          employee_UUID: uuid,
+        },
+      }),
+    );
+    return deletedEmployee.toJSON();
   }
 }

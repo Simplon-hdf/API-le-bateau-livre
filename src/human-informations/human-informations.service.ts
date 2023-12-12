@@ -9,16 +9,12 @@ export class HumanInformationsService {
   constructor(private readonly prisma: PrismaService) {}
 
   public async create(createHumanInformationDto: CreateHumanInformationDto) {
-    const createdHumanInformation = new NormalizedResponse(
-      `HumanInformation ${createHumanInformationDto.first_name} has been created`,
-      await this.prisma.humanInformations.create({
+    return await this.prisma.humanInformations.create({
       data: {
         first_name: createHumanInformationDto.first_name,
         last_name: createHumanInformationDto.last_name,
       },
-    }),
-  );
-    return createdHumanInformation.toJSON;
+    });
   }
 
   findAll() {

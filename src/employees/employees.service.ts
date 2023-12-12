@@ -4,32 +4,46 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from 'src/prisma.service';
 import NormalizedResponse from 'src/utils/normalized-response';
 import * as bcrypt from 'bcrypt';
-import { HumanInformation } from 'src/human-informations/entities/human-information.entity';
+import { HumanInformationsService } from 'src/human-informations/human-informations.service';
 
 @Injectable()
 export class EmployeesService {
   private saltGenRound = 12;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly humanInformationService: HumanInformationsService,
+    ) {}
 
 
-public async create(createEmployeeDto: CreateEmployeeDto) {
-const createdEmployee = new NormalizedResponse(
-  `Employee with this email ${createEmployeeDto.mail_address} has been created`,
-  await this.prisma.employees.create({
-    data: {
-      mail_address: createEmployeeDto.mail_address,
-      password: await bcrypt.hash(createEmployeeDto.password, this.saltGenRound),
-      humanInformation: {
-        connect: { 
-          humanInformation_UUID: createEmployeeDto.humanInformation_UUID
-        }
-      }
-    },
-  }),
-);
-return createdEmployee.toJSON();
+    public async create(createEmployeeDto: CreateEmployeeDto) {
+
+      const createdHumanInformation = await this.humanInformationService.create({
+        first_name: createEmployeeDto.first_name,
+        last_name: createEmployeeDto.last_name,
+      });
+
+  const hashedPassword = await bcrypt.hash(createEmployeeDto.password, this.saltGenRound);
+
+  const createdEmployee = new NormalizedResponse(
+    `Employee with email ${createEmployeeDto.mail_address} has been created`,
+    await this.prisma.employees.create({
+      data: {
+        mail_address: createEmployeeDto.mail_address,
+        password: hashedPassword,
+        humanInformation: {
+          connect: { 
+            humanInformation_UUID: createdHumanInformation.humanInformation_UUID,
+          },
+        },
+      },
+    }),
+  );
+
+  return createdEmployee.toJSON();
 }
+
+
 
   findAll() {
     return `This action returns all employees`;

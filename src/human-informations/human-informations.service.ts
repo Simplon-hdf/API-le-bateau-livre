@@ -1,26 +1,68 @@
 import { Injectable } from '@nestjs/common';
 import { CreateHumanInformationDto } from './dto/create-human-information.dto';
 import { UpdateHumanInformationDto } from './dto/update-human-information.dto';
+import { PrismaService } from 'src/prisma.service';
+import NormalizedResponse from 'src/utils/normalized-response';
 
 @Injectable()
 export class HumanInformationsService {
-  create(createHumanInformationDto: CreateHumanInformationDto) {
-    return 'This action adds a new humanInformation';
+  constructor(private readonly prisma: PrismaService) {}
+
+  public async create(createHumanInformationDto: CreateHumanInformationDto) {
+    const createdHumanInformation = new NormalizedResponse(
+      `HumanInformation ${createHumanInformationDto.first_name} has been created`,
+      await this.prisma.humanInformations.create({
+      data: {
+        first_name: createHumanInformationDto.first_name,
+        last_name: createHumanInformationDto.last_name,
+      },
+    }),
+  );
+    return createdHumanInformation.toJSON;
   }
 
   findAll() {
     return `This action returns all humanInformations`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} humanInformation`;
+  public async getByUUID(uuid: string) {
+    const gettedHumanInformation = new NormalizedResponse(
+      `HumanInformation ${uuid} has been found`,
+      await this.prisma.humanInformations.findUnique({
+        where: {
+          humanInformation_UUID: uuid,
+        },
+      }),
+    );
+    return gettedHumanInformation.toJSON();
   }
 
-  update(id: number, updateHumanInformationDto: UpdateHumanInformationDto) {
-    return `This action updates a #${id} humanInformation`;
+  public async updateByUUID(uuid: string, updateHumanInformationDto: UpdateHumanInformationDto) {
+    const updatedHumanInformation = new NormalizedResponse(
+      `User ${updateHumanInformationDto.first_name} has been updated`,
+      await this.prisma.humanInformations.update({
+        where: {
+          humanInformation_UUID: uuid,
+        },
+        data: {
+          first_name: !!updateHumanInformationDto.first_name ? updateHumanInformationDto.first_name : undefined,
+          last_name: !!updateHumanInformationDto.last_name ? updateHumanInformationDto.last_name : undefined,
+        },
+      }),
+    );
+    return updatedHumanInformation.toJSON();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} humanInformation`;
+  public async deleteByUUID(uuid: string) {
+    const deletedHumanInformationDto = new NormalizedResponse(
+      `HumanInformationDto ${uuid} has been deleted`,
+      await this.prisma.humanInformations.delete({
+        where: {
+          humanInformation_UUID: uuid,
+        },
+      }),
+    );
+    return deletedHumanInformationDto.toJSON();
   }
 }
+

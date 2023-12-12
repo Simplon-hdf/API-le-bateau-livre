@@ -4,9 +4,13 @@ import { AppService } from './app.service';
 import { BorrowersModule } from './borrowers/borrowers.module';
 import { EmployeesModule } from './employees/employees.module';
 import { BorrowsModule } from './borrows/borrows.module';
+import { AuthorsModule } from './authors/authors.module';
+import { BooksModule } from './books/books.module';
+import { HumanInformation } from './human-informations/entities/human-information.entity';
+import { HumanInformationsModule } from './human-informations/human-informations.module';
 
 @Module({
-  imports: [BorrowersModule, EmployeesModule, BorrowsModule],
+  imports: [BorrowersModule, EmployeesModule, BorrowsModule, AuthorsModule, BooksModule, HumanInformationsModule],
   controllers: [AppController],
   providers: [AppService],
 })

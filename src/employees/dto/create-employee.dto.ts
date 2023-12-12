@@ -13,14 +13,14 @@ export class CreateEmployeeDto {
 
     @ApiProperty({
         description: 'This field represents the employee password',
-        minLength: 72,
+        minLength: 1, // test à 1 sinon 72
         maxLength: 72,
       })
     @IsString()
-    @Length(72, 72)
+    @Length(1, 72) // test a 1 sinon 72
     password : string;
 
-    public humanInformation_UUID : string[];
+    public humanInformation_UUID : string;
 
 
 }

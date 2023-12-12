@@ -12,6 +12,6 @@ export class CreateBookDto {
     description: 'Book description',})
     @IsString()
     @Length(1, 500)
-    password : string;
+    description : string;
 }
 

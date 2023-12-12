@@ -3,41 +3,62 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from 'src/prisma.service';
 import NormalizedResponse from 'src/utils/normalized-response';
+import * as bcrypt from 'bcrypt';
+import { HumanInformation } from 'src/human-informations/entities/human-information.entity';
 
 @Injectable()
 export class EmployeesService {
+  private saltGenRound = 12;
+
   constructor(private readonly prisma: PrismaService) {}
 
-  public async create(createEmployeeDto: CreateEmployeeDto) {
-    const createdEmployee = new NormalizedResponse(
-      `Employee ${createEmployeeDto.first_name} has been created`,
-      await this.prisma.employees.create({
-      data: {
-        mail_address: createEmployeeDto.mail_address,
-        password: createEmployeeDto.password,
-        first_name: createEmployeeDto.first_name,
-        last_name: createEmployeeDto.last_name,
-
+  private async getHumanInformations(HumanInformationUUIDS: string[]) {
+    return await this.prisma.humanInformations.findMany({
+      where: {
+        OR: HumanInformationUUIDS.map((humanInformation) => ({
+          humanInformation_UUID: humanInformation,
+        })),
       },
-    }),
-  );
-    return createdEmployee.toJSON;
+    });
   }
+
+  public async create(createEmployeeDto: CreateEmployeeDto) {
+
+    const orderedHumanInformations = await this.getHumanInformations(
+      createEmployeeDto.humanInformation_UUID,
+    );
+
+    const first_name = orderedHumanInformations.map((HumanInformation) => HumanInformation.first_name);
+
+    const last_name = orderedHumanInformations.map((HumanInformation) => HumanInformation.last_name);
+
+const createdEmployee = new NormalizedResponse(
+  `Employee ${createEmployeeDto.mail_address} has been created`,
+  await this.prisma.employees.create({
+    data: {
+      mail_address: createEmployeeDto.mail_address,
+      password: await bcrypt.hash(createEmployeeDto.password, this.saltGenRound),
+      humanInformations: {
+        connect: orderedHumanInformations.map(info => ({ humanInformation_UUID: info.humanInformation_UUID })),
+      },
+    },
+  ),
+);
+return createdEmployee.toJSON();
+}
 
   findAll() {
     return `This action returns all employees`;
   }
 
-  public async getByUUID(uuid: string) {
-    const gettedEmployee = new NormalizedResponse(
-      `Employee ${uuid} has been found`,
-      await this.prisma.employees.findUnique({
+  private async getProducts(productUUIDS: string[]) {
+    return await this.prisma.products.findMany({
       where: {
-        employee_UUID: uuid,
+        OR: productUUIDS.map((product) => ({
+          UUID: product,
+        })),
       },
-    }),
-  );
-    return gettedEmployee.toJSON;
+    });
   }
 
   public async updateByUUID(uuid: string, updateEmployeeDto: UpdateEmployeeDto) {

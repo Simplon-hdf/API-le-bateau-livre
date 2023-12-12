@@ -20,4 +20,7 @@ export class CreateEmployeeDto {
     @Length(72, 72)
     password : string;
 
+    public humanInformation_UUID : string[];
+
+
 }

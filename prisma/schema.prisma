@@ -34,7 +34,7 @@ model Borrows {
 model Authors {
   author_UUID           String              @id(map: "authors_pk") @unique @default(uuid()) @db.VarChar(36)
 
-  humanInformation      HumanInformations   @relation(map: "humaininformation_fk", fields: [humanInformation_UUID], references: [humanInformation_UUID])
+  humanInformation      HumanInformations   @relation(map: "humansinformation_fk", fields: [humanInformation_UUID], references: [humanInformation_UUID])
   humanInformation_UUID String
   books                 Books[]
 }
@@ -43,7 +43,7 @@ model Borrowers {
   borrower_UUID         String              @id(map: "borrowers_pk") @unique() @default(uuid()) @db.Char(36)
 
   Borrows               Borrows[]
-  humanInformation      HumanInformations   @relation(map: "humaininformation_fk", fields: [humanInformation_UUID], references: [humanInformation_UUID])
+  humanInformation      HumanInformations   @relation(map: "humansinformation_fk", fields: [humanInformation_UUID], references: [humanInformation_UUID])
   humanInformation_UUID String
 }
 
@@ -58,7 +58,7 @@ model Employees {
 }
 
 model HumanInformations {
-  humanInformation_UUID String      @id(map: "humaninformations_pk") @unique @default(uuid()) @db.VarChar(36)
+  humanInformation_UUID String      @id(map: "humansinformations_pk") @unique @default(uuid()) @db.VarChar(36)
   first_name            String      @db.VarChar(20)
   last_name             String      @db.VarChar(30)
   authors               Authors[]

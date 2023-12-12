@@ -39,7 +39,7 @@ export class HumanInformationsService {
 
   public async updateByUUID(uuid: string, updateHumanInformationDto: UpdateHumanInformationDto) {
     const updatedHumanInformation = new NormalizedResponse(
-      `User ${updateHumanInformationDto.first_name} has been updated`,
+      `HumanInformation ${updateHumanInformationDto.first_name} has been updated`,
       await this.prisma.humanInformations.update({
         where: {
           humanInformation_UUID: uuid,
@@ -55,7 +55,7 @@ export class HumanInformationsService {
 
   public async deleteByUUID(uuid: string) {
     const deletedHumanInformationDto = new NormalizedResponse(
-      `HumanInformationDto ${uuid} has been deleted`,
+      `HumanInformation ${uuid} has been deleted`,
       await this.prisma.humanInformations.delete({
         where: {
           humanInformation_UUID: uuid,

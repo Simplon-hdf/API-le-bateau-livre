@@ -6,7 +6,7 @@ CREATE TABLE "Books" (
     "author_UUID" TEXT NOT NULL,
     "borrow_UUID" TEXT,
 
-    CONSTRAINT "books_book_uuid" PRIMARY KEY ("book_UUID")
+    CONSTRAINT "books_pk" PRIMARY KEY ("book_UUID")
 );
 
 -- CreateTable
@@ -26,15 +26,13 @@ CREATE TABLE "Authors" (
     "author_UUID" VARCHAR(36) NOT NULL,
     "humanInformation_UUID" TEXT NOT NULL,
 
-    CONSTRAINT "authors_author_uuid" PRIMARY KEY ("author_UUID")
+    CONSTRAINT "authors_pk" PRIMARY KEY ("author_UUID")
 );
 
 -- CreateTable
 CREATE TABLE "Borrowers" (
     "borrower_UUID" CHAR(36) NOT NULL,
-    "first_name" CHAR(20) NOT NULL,
-    "last_name" CHAR(30) NOT NULL,
-    "humanInformationsHumanInformation_UUID" VARCHAR(36),
+    "humanInformation_UUID" TEXT NOT NULL,
 
     CONSTRAINT "borrowers_pk" PRIMARY KEY ("borrower_UUID")
 );
@@ -44,9 +42,7 @@ CREATE TABLE "Employees" (
     "employee_UUID" CHAR(36) NOT NULL,
     "mail_address" CHAR(80) NOT NULL,
     "password" CHAR(72) NOT NULL,
-    "first_name" CHAR(20) NOT NULL,
-    "last_name" CHAR(30) NOT NULL,
-    "humanInformationsHumanInformation_UUID" VARCHAR(36),
+    "humanInformation_UUID" TEXT NOT NULL,
 
     CONSTRAINT "employees_pk" PRIMARY KEY ("employee_UUID")
 );
@@ -54,10 +50,10 @@ CREATE TABLE "Employees" (
 -- CreateTable
 CREATE TABLE "HumanInformations" (
     "humanInformation_UUID" VARCHAR(36) NOT NULL,
-    "first_name" VARCHAR(30) NOT NULL,
+    "first_name" VARCHAR(20) NOT NULL,
     "last_name" VARCHAR(30) NOT NULL,
 
-    CONSTRAINT "humaninformations_humaninformation_uuid" PRIMARY KEY ("humanInformation_UUID")
+    CONSTRAINT "humansinformations_pk" PRIMARY KEY ("humanInformation_UUID")
 );
 
 -- CreateIndex
@@ -85,16 +81,16 @@ ALTER TABLE "Books" ADD CONSTRAINT "author_fk" FOREIGN KEY ("author_UUID") REFER
 ALTER TABLE "Books" ADD CONSTRAINT "borrow_fk" FOREIGN KEY ("borrow_UUID") REFERENCES "Borrows"("borrow_UUID") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Borrows" ADD CONSTRAINT "borrowers_pk" FOREIGN KEY ("borrow_UUID") REFERENCES "Borrowers"("borrower_UUID") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Borrows" ADD CONSTRAINT "borrowers_fk" FOREIGN KEY ("borrow_UUID") REFERENCES "Borrowers"("borrower_UUID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Borrows" ADD CONSTRAINT "employees_pk" FOREIGN KEY ("employee_UUID") REFERENCES "Employees"("employee_UUID") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Borrows" ADD CONSTRAINT "employees_fk" FOREIGN KEY ("employee_UUID") REFERENCES "Employees"("employee_UUID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Authors" ADD CONSTRAINT "Authors_humanInformation_UUID_fkey" FOREIGN KEY ("humanInformation_UUID") REFERENCES "HumanInformations"("humanInformation_UUID") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Authors" ADD CONSTRAINT "humansinformation_fk" FOREIGN KEY ("humanInformation_UUID") REFERENCES "HumanInformations"("humanInformation_UUID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Borrowers" ADD CONSTRAINT "Borrowers_humanInformationsHumanInformation_UUID_fkey" FOREIGN KEY ("humanInformationsHumanInformation_UUID") REFERENCES "HumanInformations"("humanInformation_UUID") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Borrowers" ADD CONSTRAINT "humansinformation_fk" FOREIGN KEY ("humanInformation_UUID") REFERENCES "HumanInformations"("humanInformation_UUID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Employees" ADD CONSTRAINT "Employees_humanInformationsHumanInformation_UUID_fkey" FOREIGN KEY ("humanInformationsHumanInformation_UUID") REFERENCES "HumanInformations"("humanInformation_UUID") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Employees" ADD CONSTRAINT "Employees_humanInformation_UUID_fkey" FOREIGN KEY ("humanInformation_UUID") REFERENCES "HumanInformations"("humanInformation_UUID") ON DELETE RESTRICT ON UPDATE CASCADE;

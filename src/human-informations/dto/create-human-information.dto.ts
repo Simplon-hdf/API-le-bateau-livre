@@ -1,7 +1,7 @@
 import { IsString, IsUUID, Length, isString } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateHumanInformation {
+export class CreateHumanInformationDto {
     @ApiProperty({
         description: 'This field represents the human first_name',
         minLength: 5,

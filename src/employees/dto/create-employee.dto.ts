@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Length } from 'class-validator';
+import { IsEmail, IsString, Length, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateEmployeeDto {
@@ -9,18 +9,32 @@ export class CreateEmployeeDto {
       })
     @IsEmail()
     @Length(7, 80)
-    mail_address : string;
+    mail_address: string;
 
     @ApiProperty({
         description: 'This field represents the employee password',
-        minLength: 1, // test à 1 sinon 72
+        minLength: 1,
         maxLength: 72,
       })
     @IsString()
-    @Length(1, 72) // test a 1 sinon 72
-    password : string;
+    @Length(1, 72)
+    password: string;
 
-    public humanInformation_UUID : string;
+    @ApiProperty({
+        description: 'This field represents the UUID of the human information',
+      })
+    @IsUUID()
+    humanInformation_UUID: string;
 
+    @ApiProperty({
+        description: 'This field represents the employee first name',
+      })
+    @IsString()
+    first_name: string;
 
+    @ApiProperty({
+        description: 'This field represents the employee last name',
+      })
+    @IsString()
+    last_name: string;
 }

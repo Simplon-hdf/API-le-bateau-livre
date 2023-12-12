@@ -4,7 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateBookDto {
     @ApiProperty({  
         description: 'Book title',})
-    @IsEmail()
     @Length(1, 40)
     name : string;
 

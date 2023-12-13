@@ -49,9 +49,8 @@ export class EmployeesService {
   }
 
   public async getByUUID(uuid: string) {
-    const gettedEmployee = new NormalizedResponse(
-      `Employee ${uuid} has been found`,
-      await this.prisma.employees.findUnique({
+    try {
+      const employee = await this.prisma.employees.findUnique({
         where: {
           employee_UUID: uuid,
         },
@@ -60,26 +59,44 @@ export class EmployeesService {
             select: {
               first_name: true,
               last_name: true,
-            }
-          }
-        }
-      }),
-    );
-    return gettedEmployee.toJSON();
+            },
+          },
+        },
+      });
+  
+      if (!employee) {
+        throw new Error(`Employee with UUID ${uuid} not found`);
+      }
+  
+      const responseMessage = `Employee with UUID ${uuid} has been found`;
+      const gettedEmployee = new NormalizedResponse(responseMessage, employee);
+      return gettedEmployee.toJSON();
+    } catch (error) {
+      const errorMessage = `Error while fetching employee with UUID ${uuid}: ${error.message}`;
+      const errorResponse = new NormalizedResponse(errorMessage, null);
+      return errorResponse.toJSON();
+    }
   }
+  
 
   public async updateByUUID(uuid: string, updateEmployeeDto: UpdateEmployeeDto) {
     const updatedEmployee = new NormalizedResponse(
-      `Employee with this ${updateEmployeeDto.mail_address} has been updated`,
+      `Employee with this new email ${updateEmployeeDto.mail_address} has been updated`,
       await this.prisma.employees.update({
         where: {
           employee_UUID: uuid,
         },
         data: {
           mail_address: !!updateEmployeeDto.mail_address ? updateEmployeeDto.mail_address : undefined,
-          password: !!await bcrypt.hash(updateEmployeeDto.password, this.saltGenRound) ? await bcrypt.hash(updateEmployeeDto.password, this.saltGenRound) : undefined,
+          password: !!updateEmployeeDto.password ? await bcrypt.hash(updateEmployeeDto.password, this.saltGenRound) : undefined,
+          humanInformation: {
+            update: {
+              first_name: !!updateEmployeeDto.first_name ? updateEmployeeDto.first_name : undefined,
+              last_name: !!updateEmployeeDto.last_name ? updateEmployeeDto.last_name : undefined,
         },
-      }),
+      }
+    }
+  }),
     );
     return updatedEmployee.toJSON();
   }

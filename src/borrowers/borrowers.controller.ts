@@ -9,10 +9,10 @@ import { ApiTags } from '@nestjs/swagger';
 export class BorrowersController {
   constructor(private readonly borrowersService: BorrowersService) {}
 
-  //@Post()
-  //create(@Body() createBorrowerDto: CreateBorrowerDto) {
-  //  return this.borrowersService.create(createBorrowerDto);
- // }
+  @Post()
+  create(@Body() createBorrowerDto: CreateBorrowerDto) {
+  return this.borrowersService.create(createBorrowerDto);
+ }
 
   @Get()
   findAll() {
@@ -24,6 +24,13 @@ export class BorrowersController {
     return this.borrowersService.getByUUID(uuid);
   }
 
+  @Patch(':uuid')
+  public updateByUUID(
+    @Param('uuid') uuid: string,
+    @Body() updateBorrowerDto: UpdateBorrowerDto,
+  ) {
+    return this.borrowersService.updateByUUID(uuid, updateBorrowerDto);
+  }
 
   @Delete(':uuid')
   public deleteByUUID(@Param('uuid') uuid: string) {

@@ -17,31 +17,30 @@ export class EmployeesService {
 
 
     public async create(createEmployeeDto: CreateEmployeeDto) {
-
       const createdHumanInformation = await this.humanInformationService.create({
         first_name: createEmployeeDto.first_name,
         last_name: createEmployeeDto.last_name,
       });
-
-  const hashedPassword = await bcrypt.hash(createEmployeeDto.password, this.saltGenRound);
-
-  const createdEmployee = new NormalizedResponse(
-    `Employee with email ${createEmployeeDto.mail_address} has been created`,
-    await this.prisma.employees.create({
-      data: {
-        mail_address: createEmployeeDto.mail_address,
-        password: hashedPassword,
-        humanInformation: {
-          connect: { 
-            humanInformation_UUID: createdHumanInformation.humanInformation_UUID,
+    
+      const hashedPassword = await bcrypt.hash(createEmployeeDto.password, this.saltGenRound);
+    
+      const createdEmployee = new NormalizedResponse(
+        `Employee with email ${createEmployeeDto.mail_address} has been created`,
+        await this.prisma.employees.create({
+          data: {
+            mail_address: createEmployeeDto.mail_address,
+            password: hashedPassword,
+            humanInformation: {
+              connect: { 
+                humanInformation_UUID: createdHumanInformation.humanInformation_UUID,
+              },
+            },
           },
-        },
-      },
-    }),
-  );
-
-  return createdEmployee.toJSON();
-}
+        }),
+      );
+    
+      return createdEmployee.toJSON();
+    }
 
 
 

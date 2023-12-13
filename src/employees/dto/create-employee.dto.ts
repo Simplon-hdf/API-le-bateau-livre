@@ -20,11 +20,7 @@ export class CreateEmployeeDto {
     @Length(1, 72)
     password: string;
 
-    @ApiProperty({
-        description: 'This field represents the UUID of the human information',
-      })
-    @IsUUID()
-    humanInformation_UUID: string;
+
 
     @ApiProperty({
         description: 'This field represents the employee first name',

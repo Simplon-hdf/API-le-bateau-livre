@@ -13,5 +13,5 @@ export class CreateAuthorDto {
         description: 'This field represents the humanInformation_UUID',
     })
     @IsString()
-    public humanInformation_UUID: string;
+    public humanInformation_UUID: string; 
 }

@@ -3,53 +3,114 @@ import { CreateBorrowerDto } from './dto/create-borrower.dto';
 import { UpdateBorrowerDto } from './dto/update-borrower.dto';
 import { PrismaService } from 'src/prisma.service';
 import NormalizedResponse from 'src/utils/normalized-response';
+import { HumanInformationsService } from 'src/human-informations/human-informations.service';
 
 
 @Injectable()
 export class BorrowersService {
   
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly humanInformationService: HumanInformationsService,
+    ) {}
 
-//  public async create(CreateBorrowerDto: CreateBorrowerDto) {
-//    const createBorrowerDto = new NormalizedResponse(
-//      `Borrower ${CreateBorrowerDto.humanInformation_UUID} has been created`,
-//      await this.prisma.employees.create({
-//      data: {
-//        humanInformation: {
-//          connect: { 
-//            humanInformation_UUID: CreateBorrowerDto.humanInformation_UUID,
-//          }
-//      },
-//    }}),
-//  );
-//    return createBorrowerDto.toJSON;
-//  }
+    public async create(createBorrowerDto: CreateBorrowerDto) {
+      try {
+        const createdHumanInformation = await this.humanInformationService.create({
+          first_name: createBorrowerDto.first_name,
+          last_name: createBorrowerDto.last_name,
+        });
+    
+        const createdBorrower = await this.prisma.borrowers.create({
+          data: {
+            humanInformation: {
+              connect: { 
+                humanInformation_UUID: createdHumanInformation.humanInformation_UUID,
+              },
+            },
+          },
+        });
+    
+        const responseMessage = `Borrower ${createBorrowerDto.first_name} has been created`;
+        const normalizedResponse = new NormalizedResponse(responseMessage, createdBorrower);
+        return normalizedResponse.toJSON();
+      } catch (error) {
+        // Gérez les erreurs ici
+        console.error(error);
+        const errorMessage = `Error while creating borrower: ${error.message}`;
+        const errorResponse = new NormalizedResponse(errorMessage, null);
+        return errorResponse.toJSON();
+      }
+    }
+    
 
   findAll() {
     return `This action returns all borrowers`;
   }
 
   public async getByUUID(uuid: string) {
-    const gettedBorrower = new NormalizedResponse(
-      `Borrower ${uuid} has been found`,
-      await this.prisma.borrowers.findUnique({
-      where: {
-        borrower_UUID: uuid,
-      },
-    }),
-  );
-    return gettedBorrower.toJSON;
+    try {
+      const borrower = await this.prisma.borrowers.findUnique({
+        where: {
+          borrower_UUID: uuid,
+        },
+        include: {
+          humanInformation: {
+            select: {
+              first_name: true,
+              last_name: true,
+            },
+          },
+        },
+      });
+  
+      if (!borrower) {
+        throw new Error(`borrower with UUID ${uuid} not found`);
+      }
+  
+      const responseMessage = `borrower with UUID ${uuid} has been found`;
+      const gettedborrower = new NormalizedResponse(responseMessage, borrower);
+      return gettedborrower.toJSON();
+    } catch (error) {
+      const errorMessage = `Error while fetching borrower with UUID ${uuid}: ${error.message}`;
+      const errorResponse = new NormalizedResponse(errorMessage, null);
+      return errorResponse.toJSON();
+    }
   }
 
+  public async updateByUUID(uuid: string, updateBorrowerDto: UpdateBorrowerDto) {
+    const updatedBorrower = new NormalizedResponse(
+      `Borrower ${updateBorrowerDto.first_name} has been updated`,
+      await this.prisma.borrowers.update({
+        where: {
+          borrower_UUID: uuid,
+        },
+        data: {
+          humanInformation: {
+            update: {
+              first_name: updateBorrowerDto.first_name,
+              last_name: updateBorrowerDto.last_name,
+            },
+          },
+        },
+      }),
+    );
+    return updatedBorrower.toJSON();
+  }
+  
+  
+
+
+
   public async deleteByUUID(uuid: string) {
-    const deletedEmployee = new NormalizedResponse(
-      `Employee ${uuid} has been deleted`,
-      await this.prisma.employees.delete({
-      where: {
-        employee_UUID: uuid,
-      },
-    }),
-  );
-    return deletedEmployee.toJSON;
+    const deletedBorrower = new NormalizedResponse(
+      `Borrower ${uuid} has been deleted`,
+      await this.prisma.borrowers.delete({
+        where: {
+          borrower_UUID: uuid,
+        },
+      }),
+    );
+    return deletedBorrower.toJSON();
   }
 }

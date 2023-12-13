@@ -41,15 +41,69 @@ export class AuthorsService {
     return `This action returns all authors`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} author`;
+  public async getByUUID(uuid: string) {
+    try {
+      const author = await this.prisma.authors.findUnique({
+        where: {
+          author_UUID: uuid,
+        },
+        include: {
+          humanInformation: {
+            select: {
+              first_name: true,
+              last_name: true,
+            },
+          },
+        },
+      });
+  
+      if (!author) {
+        throw new Error(`Author with UUID ${uuid} not found`);
+      }
+  
+      const responseMessage = `Author with UUID ${uuid} has been found`;
+      const gettedauthor = new NormalizedResponse(responseMessage, author);
+      return gettedauthor.toJSON();
+    } catch (error) {
+      const errorMessage = `Error while fetching author with UUID ${uuid}: ${error.message}`;
+      const errorResponse = new NormalizedResponse(errorMessage, null);
+      return errorResponse.toJSON();
+    }
   }
 
-  update(id: number, updateAuthorDto: UpdateAuthorDto) {
-    return `This action updates a #${id} author`;
+  public async updateByUUID(uuid: string, updateAuthorDto: UpdateAuthorDto) {
+    const updatedAuthor = new NormalizedResponse(
+      `Author ${updateAuthorDto.first_name} has been updated`,
+      await this.prisma.authors.update({
+        where: {
+          author_UUID: uuid,
+        },
+        data: {
+          humanInformation: {
+            update: {
+              first_name: updateAuthorDto.first_name,
+              last_name: updateAuthorDto.last_name,
+            },
+          },
+        },
+      }),
+    );
+    return updatedAuthor.toJSON();
   }
+  
+  
 
-  remove(id: number) {
-    return `This action removes a #${id} author`;
+
+
+  public async deleteByUUID(uuid: string) {
+    const deletedBorrower = new NormalizedResponse(
+      `Borrower ${uuid} has been deleted`,
+      await this.prisma.borrowers.delete({
+        where: {
+          borrower_UUID: uuid,
+        },
+      }),
+    );
+    return deletedBorrower.toJSON();
   }
 }

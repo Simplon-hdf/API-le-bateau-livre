@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, Length, IsUUID, MaxLength  } from 'class-validator';
 
 export class CreateAuthorDto {
-    @ApiProperty({
-        description: 'This field represents the author_UUID',
-    })
-    @IsString()
-    public author_UUID: string;
 
-    
     @ApiProperty({
-        description: 'This field represents the humanInformation_UUID',
-    })
+        description: 'This field represents the authors first name',
+      })
     @IsString()
-    public humanInformation_UUID: string;
+    first_name: string;
+
+    @ApiProperty({
+        description: 'This field represents the authors last name',
+      })
+    @IsString()
+    last_name: string;
 }

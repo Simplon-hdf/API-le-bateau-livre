@@ -9,8 +9,8 @@ datasource db {
 
 model Books {
   book_UUID      String        @id(map: "books_pk") @unique @default(uuid()) @db.VarChar(36)
-  name           String        @db.VarChar(30)
-  description    String        @db.VarChar(30)
+  name           String        @db.VarChar(100)
+  description    String        @db.VarChar(500)
 
   author         Authors       @relation(map: "author_fk", fields: [author_UUID], references: [author_UUID])
   author_UUID    String

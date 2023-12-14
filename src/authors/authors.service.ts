@@ -38,8 +38,18 @@ export class AuthorsService {
   }
 
   findAll() {
-    return `This action returns all authors`;
+    return this.prisma.authors.findMany({
+      include: {
+        humanInformation: {
+          select: {
+            first_name: true,
+            last_name: true,
+          },
+        },
+      },
+    });
   }
+
 
   public async getByUUID(uuid: string) {
     try {
@@ -56,11 +66,11 @@ export class AuthorsService {
           },
         },
       });
-  
+
       if (!author) {
         throw new Error(`Author with UUID ${uuid} not found`);
       }
-  
+
       const responseMessage = `Author with UUID ${uuid} has been found`;
       const gettedauthor = new NormalizedResponse(responseMessage, author);
       return gettedauthor.toJSON();
@@ -90,10 +100,6 @@ export class AuthorsService {
     );
     return updatedAuthor.toJSON();
   }
-  
-  
-
-
 
   public async deleteByUUID(uuid: string) {
     const deletedBorrower = new NormalizedResponse(
@@ -107,4 +113,3 @@ export class AuthorsService {
     return deletedBorrower.toJSON();
   }
 }
-

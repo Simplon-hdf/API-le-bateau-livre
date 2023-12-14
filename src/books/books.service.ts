@@ -1,29 +1,47 @@
-
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import NormalizedResponse from 'src/utils/normalized-response';
 import { PrismaService } from 'src/prisma.service';
+
 
 @Injectable()
 export class BooksService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createBookDto: CreateBookDto) {
-    const createdBook = new NormalizedResponse(
-      `Book ${createBookDto.name} has been created, here is its description : ${createBookDto.description}`,
-      await this.prisma.books.create({
-        data: {
-          name: createBookDto.name,
-          description: createBookDto.description,
-          author_UUID: createBookDto.author_UUID,
-          borrow_UUID: createBookDto.borrow_UUID,
-        },
-      }),
-    );
-    return createdBook.toJSON();
-  }
+    if (createBookDto.name.length > 100 || createBookDto.description.length > 500) {
+      throw new BadRequestException('Name or description exceeds allowed length');
+    }
 
+    try {
+      const createdAuthor = await this.prisma.authors.create({
+        data: {
+          humanInformation: {
+            create: {
+              first_name: createBookDto.author_first_name,
+              last_name: createBookDto.author_last_name,
+            },
+          },
+        },
+      });
+
+      const createdBook = new NormalizedResponse(
+        `Book ${createBookDto.name} has been created, here is its description: ${createBookDto.description}`,
+        await this.prisma.books.create({
+          data: {
+            name: createBookDto.name,
+            description: createBookDto.description,
+            author_UUID: createdAuthor.author_UUID,
+            borrow_UUID: createBookDto.borrow_UUID,
+          },
+        }),
+      );
+      return createdBook.toJSON();
+    } catch (error) {
+      throw new InternalServerErrorException('Error creating book');
+    }
+  }
   async findAll() {
     const books = await this.prisma.books.findMany();
     return books.map((book) => ({

@@ -17,18 +17,18 @@ export class BooksController {
     return this.booksService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(+id);
+  @Get(':book_UUID')
+  findOne(@Param('book_UUID') book_UUID: string) {
+    return this.booksService.findOne(book_UUID);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(+id, updateBookDto);
+  @Patch(':book_UUID')
+  update(@Param('book_UUID') book_UUID: string, @Body() updateBookDto: UpdateBookDto) {
+    return this.booksService.update(book_UUID, updateBookDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.booksService.remove(+id);
+  @Delete(':book_UUID') 
+  remove(@Param('book_UUID') book_UUID: string) {
+    return this.booksService.remove(book_UUID);
   }
 }

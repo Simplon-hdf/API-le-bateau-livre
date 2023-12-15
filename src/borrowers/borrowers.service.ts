@@ -15,13 +15,14 @@ export class BorrowersService {
     ) {}
 
     public async create(createBorrowerDto: CreateBorrowerDto) {
-      try {
         const createdHumanInformation = await this.humanInformationService.create({
           first_name: createBorrowerDto.first_name,
           last_name: createBorrowerDto.last_name,
         });
     
-        const createdBorrower = await this.prisma.borrowers.create({
+        const createdBorrower = new NormalizedResponse(
+          `Borrower ${createBorrowerDto.first_name} has been created`,
+        await this.prisma.borrowers.create({
           data: {
             humanInformation: {
               connect: { 
@@ -29,19 +30,9 @@ export class BorrowersService {
               },
             },
           },
-        });
-    
-        const responseMessage = `Borrower ${createBorrowerDto.first_name} has been created`;
-        const normalizedResponse = new NormalizedResponse(responseMessage, createdBorrower);
-        return normalizedResponse.toJSON();
-      } catch (error) {
-        // Gérez les erreurs ici
-        console.error(error);
-        const errorMessage = `Error while creating borrower: ${error.message}`;
-        const errorResponse = new NormalizedResponse(errorMessage, null);
-        return errorResponse.toJSON();
+        }))
+        return createdBorrower.toJSON();
       }
-    }
     
 
   findAll() {

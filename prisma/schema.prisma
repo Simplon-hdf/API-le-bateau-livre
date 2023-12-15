@@ -25,7 +25,7 @@ model Borrows {
   end_at           DateTime
 
   borrower_UUID     String      @db.Char(36)
-  borrower          Borrowers   @relation(map: "borrowers_fk", fields: [borrow_UUID], references: [borrower_UUID])
+  borrower          Borrowers   @relation(map: "borrowers_fk", fields: [borrower_UUID], references: [borrower_UUID])
   employee_UUID     String      @db.Char(36)
   employee          Employees   @relation(map: "employees_fk", fields: [employee_UUID], references: [employee_UUID])
   Books             Books[]

@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Books {
+  book_UUID      String        @id(map: "books_pk") @unique @default(uuid()) @db.VarChar(36)
+  name           String        @db.VarChar(100)
+  description    String        @db.VarChar(500)
+
+  author         Authors       @relation(map: "author_fk", fields: [author_UUID], references: [author_UUID])
+  author_UUID    String
+  borrow         Borrows?      @relation(map: "borrow_fk", fields: [borrow_UUID], references: [borrow_UUID])
+  borrow_UUID    String?
+}
+
+model Borrows {
+  borrow_UUID      String       @id(map: "borrows_pk") @unique() @default(uuid()) @db.Char(36)
+  status           Int
+  started_at       DateTime     @default(now())
+  end_at           DateTime
+
+  borrower_UUID     String      @db.Char(36)
+  borrower          Borrowers   @relation(map: "borrowers_fk", fields: [borrower_UUID], references: [borrower_UUID])
+  employee_UUID     String      @db.Char(36)
+  employee          Employees   @relation(map: "employees_fk", fields: [employee_UUID], references: [employee_UUID])
+  Books             Books[]
+}
+
+model Authors {
+  author_UUID           String              @id(map: "authors_pk") @unique @default(uuid()) @db.VarChar(36)
+
+  humanInformation      HumanInformations   @relation(map: "humansinformation_fk", fields: [humanInformation_UUID], references: [humanInformation_UUID])
+  humanInformation_UUID String
+  books                 Books[]
+}
+
+model Borrowers {
+  borrower_UUID         String              @id(map: "borrowers_pk") @unique() @default(uuid()) @db.Char(36)
+
+  Borrows               Borrows[]
+  humanInformation      HumanInformations   @relation(map: "humansinformation_fk", fields: [humanInformation_UUID], references: [humanInformation_UUID])
+  humanInformation_UUID String
+}
+
+model Employees {
+  employee_UUID             String                  @id(map: "employees_pk") @unique() @default(uuid()) @db.Char(36)
+  mail_address              String                  @db.Char(80)
+  password                  String                  @db.Char(72)
+
+  Borrows                   Borrows[]
+  humanInformation          HumanInformations       @relation(fields: [humanInformation_UUID], references: [humanInformation_UUID])
+  humanInformation_UUID     String
+}
+
+model HumanInformations {
+  humanInformation_UUID String      @id(map: "humansinformations_pk") @unique @default(uuid()) @db.VarChar(36)
+  first_name            String      @db.VarChar(20)
+  last_name             String      @db.VarChar(30)
+  authors               Authors[]
+  borrowers             Borrowers[]
+  employees             Employees[]
+}

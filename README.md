@@ -49,8 +49,11 @@ Vous devez créer une API pour les employés d'une médiathèque, ces employés 
 
 ### MCD
 
-![](assets/mcd.png)
-
+<p align="center">
+  <img src="./img/mcd.png" width="600" height="350" alt="mcd">
+</p>
 ### MLD
 
-![](assets/mld.png)
+<p align="center">
+  <img src="./img/mld.png" width="600" height="350" alt="mld">
+</p>

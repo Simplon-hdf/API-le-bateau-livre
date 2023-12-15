@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   appConfig(app);
   initSwagger(app);
-  await app.listen(3000);
+  await app.listen(3001);
 }
 
 function appConfig(app: INestApplication) {
@@ -20,7 +20,7 @@ function initSwagger(app: INestApplication) {
     app,
     SwaggerModule.createDocument(
       app,
-      new DocumentBuilder().addServer('E-Commerce').build(),
+      new DocumentBuilder().addServer('api_bateau').build(),
     ),
   );
 }

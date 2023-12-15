@@ -45,8 +45,38 @@ export class BorrowsService {
     return `This action returns all borrows`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} borrow`;
+  public async getByUUID(uuid: string) {
+    try {
+      const borrow = await this.prisma.borrows.findUnique({
+        where: {
+          borrow_UUID: uuid,
+        },
+        include: {
+          borrower: {
+            include: {
+              humanInformation: {
+                select: {
+                  first_name: true,
+                  last_name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+  
+      if (!borrow) {
+        throw new Error(`Borrow with UUID ${uuid} not found`);
+      }
+  
+      const responseMessage = `Borrow with UUID ${uuid} has been found`;
+      const gettedBorrow = new NormalizedResponse(responseMessage, borrow);
+      return gettedBorrow.toJSON();
+    } catch (error) {
+      const errorMessage = `Error while fetching borrow with UUID ${uuid}: ${error.message}`;
+      const errorResponse = new NormalizedResponse(errorMessage, null);
+      return errorResponse.toJSON();
+    }
   }
 
   update(id: number, updateBorrowDto: UpdateBorrowDto) {

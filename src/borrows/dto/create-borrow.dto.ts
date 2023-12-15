@@ -1,19 +1,27 @@
-import { IsInt, IsIn, Length } from 'class-validator';
+import { IsInt, IsIn, IsString, IsUUID, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+
 export class CreateBorrowDto {
-    @ApiProperty({
-        description: 'This field represents the status of borrow',
-    })
+    
+    @IsUUID()
+    @ApiProperty()
+    borrower_UUID?: string;
+
+    @IsUUID()
+    @ApiProperty()
+    employee_UUID: string;
+
+    @IsUUID()
+    @ApiProperty()
+    book_UUID: string;
+
     @IsInt()
-    @IsIn([0, 1, 2])
+    @ApiProperty()
     status: number;
 
-    end_at: Date;
-    
-    @ApiProperty({
-        description: 'This field represents the UUID of the borrower',
-      })
-      @Length(36, 36, { message: 'Borrower UUID must be 36 characters long' })
-      borrower_UUID: string; // Add this property
+     @IsDateString()
+     @ApiProperty()
+     end_at: string;
 }
+

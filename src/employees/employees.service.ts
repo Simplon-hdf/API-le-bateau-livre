@@ -25,7 +25,7 @@ export class EmployeesService {
       const hashedPassword = await bcrypt.hash(createEmployeeDto.password, this.saltGenRound);
     
       const createdEmployee = new NormalizedResponse(
-        `Employee with email ${createEmployeeDto.mail_address} has been created`,
+        `Employee with email ${createEmployeeDto.first_name} has been created`,
         await this.prisma.employees.create({
           data: {
             mail_address: createEmployeeDto.mail_address,

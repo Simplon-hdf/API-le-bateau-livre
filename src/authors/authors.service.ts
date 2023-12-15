@@ -102,14 +102,14 @@ export class AuthorsService {
   }
 
   public async deleteByUUID(uuid: string) {
-    const deletedBorrower = new NormalizedResponse(
-      `Borrower ${uuid} has been deleted`,
-      await this.prisma.borrowers.delete({
+    const deletedAuthor = new NormalizedResponse(
+      `Author ${uuid} has been deleted`,
+      await this.prisma.authors.delete({
         where: {
-          borrower_UUID: uuid,
+          author_UUID: uuid,
         },
       }),
     );
-    return deletedBorrower.toJSON();
+    return deletedAuthor.toJSON();
   }
 }

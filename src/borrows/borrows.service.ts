@@ -79,11 +79,31 @@ export class BorrowsService {
     }
   }
 
-  update(id: number, updateBorrowDto: UpdateBorrowDto) {
-    return `This action updates a #${id} borrow`;
+  public async updateByUUID(uuid: string, updateBorrowDto: UpdateBorrowDto) {
+    const updatedBorrow = new NormalizedResponse(
+      `Borrow has been updated`,
+      await this.prisma.borrows.update({
+        where: {
+          borrow_UUID: uuid,
+        },
+        data: {
+          end_at: new Date(updateBorrowDto.end_at),
+          status: updateBorrowDto.status,
+        },
+      }),
+    );
+    return updatedBorrow.toJSON();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} borrow`;
+  public async deleteByUUID(uuid: string) {
+    const deletedBorrow = new NormalizedResponse(
+      `Borrow ${uuid} has been deleted`,
+      await this.prisma.borrows.delete({
+        where: {
+          borrow_UUID: uuid,
+        },
+      }),
+    );
+    return deletedBorrow.toJSON();
   }
 }

@@ -48,7 +48,7 @@ $ npx prisma migrate dev
 $ npm run start:prod
 
 # Swagger
-Ouvrir l'adresse suivante dans un navigateur Web : http://localhost:3000/api
+Ouvrir l'adresse suivante dans un navigateur Web : http://localhost:3001/api
 
 ```
 

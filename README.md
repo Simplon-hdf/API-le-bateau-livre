@@ -1,49 +1,105 @@
-# API interne pour une Médiathéque
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-Vous devez créer une API pour les employés d'une médiathèque, ces employés doivent référencés chaque livre sur le site de la médiathèque pour examiner les disponibilités des livres.
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-## Spécifications fonctionnelles
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-### Employés
+## Description
 
-- Les employés doivent être composés des champs :
-  - UUID (De type VARCHAR et de longueur 36 (minimale et maximale))
-  - Un prénon (De type VARCHAR et de longueur 20 (maximale))
-  - Un nom de famille (De type VARCHAR et de longueur 30 (maximale))
-  - Une adresse e-mail (De type VARCHAR et de longueur 80 (maximale))
-  - Un mot de passe (De type VARCHAR et de longueur 72 (minimale et maximale))
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-### Livres
+## Installation
 
-- Les livres doivent être composés des champs :
-  - UUID (De type VARCHAR et de longueur 36 (minimale et maximale))
-  - Un nom (De type VARCHAR et de longueur 40 (maximale))
-  - Une description (De type TEXT et de longueur 500 (maximale))
-  - L'UUID d'un autheur
+```bash
+# Repo Cloning
+$ git clone https://github.com/Simplon-hdf/API-le-bateau-livre.git
 
-### Autheurs
+# Change Directory
+$ cd Api-le-bateau-livre
 
-- Les autheurs doivent être composés des champs :
-  - UUID (De type VARCHAR et de longueur 36 (minimale et maximale))
-  - Un prénon (De type VARCHAR et de longueur 20 (maximale))
-  - Un nom de famille (De type VARCHAR et de longueur 30 (maximale))
+# PNPM Installation
+$ npm install
 
-### Emprunteurs
+# Modifier le fichier .env
+DATABASE_URL="postgresql://username:password@localhost:5432/dbname?schema=public"
 
-- Les emprunteurs doivent être composés des champs : 
-  - UUID (De type VARCHAR et de longueur 36 (minimale et maximale))
-  - Un prénon (De type VARCHAR et de longueur 20 (maximale))
-  - Un nom de famille (De type VARCHAR et de longueur 30 (maximale))
-  
-### Emprunts
+# Prisma Migration
+$ npx prisma migrate dev
 
-- Les emprunts doivent être composés des champs :
-  - UUID (De type VARCHAR et de longueur 36 (minimale et maximale))
-  - L'UUID d'un livre (De type VARCHAR et de longueur 36 (minimale et maximale))
-  - L'UUID d'un emprunteur (De type VARCHAR et de longueur 36 (minimale et maximale))
-  - Une date de début (De type DATE)
-  - Une date de fin (De type DATE)
-  - Un état (De type INT >= 0 ou <= 2)
+# Mise en Production
+$ npm run start:prod
+
+# Swagger
+Ouvrir l'adresse suivante dans un navigateur Web : http://localhost:3000/api
+
+```
+
+## Running the app
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
+```
+
+## Test
+
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
+
+## Support
+
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+
+## Stay in touch
+
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
+
+## License
+
+Nest is [MIT licensed](LICENSE).
+
+## Swagger
+
+- Doc OpenAPI (Swagger) NestJS - [docs.nestjs](https://docs.nestjs.com/openapi/introduction)
+- Swagger - [@nestjs/swagger ](https://github.com/nestjs/swagger)
+
+## Contexte
+
+Ceci est une API pour les employés d'une médiathèque, ces employés peuvent référencés chaque livre sur le site de la médiathèque pour examiner les disponibilités des livres.
 
 ## Merise
 
